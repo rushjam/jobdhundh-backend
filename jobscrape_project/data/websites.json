@@ -1,0 +1,30 @@
+[
+  {
+    "company_name": "Home Depot",
+    "url": "https://careers.homedepot.com/job-search-results/?keyword=Software%20Engineer&fuzzy=false&location=United%20States&country=US&radius=10",
+    "dynamic": true,
+    "job_selector": ".job.clearfix",
+    "title_selector": ".jobTitle a",
+    "location_selector": ".joblist-location",
+    "date_selector": null,
+    "description_selector": null,
+    "link_selector": ".jobTitle a",
+    "load_more_selector": null,
+    "infinite_scroll": false,
+    "next_page_selector": ".pagination-li .button.inactive[aria-label='Go to next page']"
+  },
+  {
+    "company_name": "J. P. Morgan",
+    "url": "https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/requisitions?lastSelectedFacet=CATEGORIES&location=United+States&locationId=300000000289738&locationLevel=country&mode=location&selectedCategoriesFacet=300000086152753&selectedPostingDatesFacet=7",
+    "dynamic": true,
+    "job_selector": ".jobs-grid__list li[data-qa='searchResultItem']",
+    "title_selector": ".job-tile__title",
+    "location_selector": "[data-bind='html: primaryLocation']",
+    "date_selector": "[data-bind='text: job.postedDate']",
+    "description_selector": ".job-grid-item__description",
+    "link_selector": ".job-grid-item__link",
+    "load_more_selector": null,
+    "infinite_scroll": true,
+    "next_page_selector": null
+  }
+]
