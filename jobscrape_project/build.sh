@@ -4,4 +4,4 @@ set -o errexit
 
 pip install -r requirements.txt
 
-python manage.py runserver
+gunicorn --worker-tmp-dir /dev/shm jobscrape_project.wsgi
