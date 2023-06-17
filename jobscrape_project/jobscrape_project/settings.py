@@ -27,6 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Disable automatic running of collectstatic during Heroku deployment
+import sys
+
+if 'collectstatic' not in sys.argv:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
 
 # Application definition
 
