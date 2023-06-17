@@ -84,7 +84,7 @@ DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
 DATABASES = {
     'default': {
-    'ENGINE': 'django.db.backends.postgresql',
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
     'NAME': 'jobscrape',
     'USER': 'doadmin',
     'PASSWORD': 'AVNS_Lti7z9F-CzePWuWG5vx',
