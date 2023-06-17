@@ -86,10 +86,10 @@ DATABASES = {
     'default': {
     'ENGINE': 'django.db.backends.postgresql',
     'NAME': 'jobscrape',
-    'USER': 'postgres',
-    'PASSWORD': 'admin',
-    'HOST': 'localhost',
-    'PORT': '5432',
+    'USER': 'doadmin',
+    'PASSWORD': 'AVNS_Lti7z9F-CzePWuWG5vx',
+    'HOST': 'db-postgresql-sfo3-81757-do-user-8736550-0.b.db.ondigitalocean.com',
+    'PORT': '25060',
 }
 }
 
