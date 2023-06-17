@@ -27,12 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Disable automatic running of collectstatic during Heroku deployment
-import sys
-
-if 'collectstatic' not in sys.argv:
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-
 
 # Application definition
 
@@ -45,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'jobs',
     'rest_framework',
+    'django.contrib.staticfiles'
 ]
 
 MIDDLEWARE = [
@@ -128,7 +123,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-# STATIC_URL = 'static/'
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
