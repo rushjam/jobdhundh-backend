@@ -21,8 +21,8 @@ from jobs import views
 
 
 router = routers.DefaultRouter()
-router.register(r'jobs', views.JobViewSet)
-router.register(r'company', views.CompanyViewSet)
+router.register(r'jobs', views.JobViewSet, basename='job')
+router.register(r'companies', views.CompanyViewSet, basename='company')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

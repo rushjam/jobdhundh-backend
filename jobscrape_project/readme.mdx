@@ -1,0 +1,7 @@
+1. /jobs/ and /jobs/{id}/: These routes will allow you to list all job listings (GET), retrieve a specific job listing by its ID (GET), create a new job listing (POST), update a job listing (PUT or PATCH), and delete a job listing (DELETE). These CRUD operations are provided by the ModelViewSet class in Django Rest Framework.
+
+2. /companies/ and /companies/{id}/: These routes are similar to the jobs routes, but for companies. You can list, create, retrieve, update, and delete companies.
+
+3. /companies/{id}/jobs/: This is a custom route (or "detail route") that shows all job listings associated with a specific company. The {id} in the URL is the ID of the company. When you make a GET request to this route, it will return a list of all job listings that belong to the company. The jobs method in the CompanyViewSet class handles this request.
+
+Remember to replace {id} in the URLs above with the actual ID of the job listing or company. The id is a primary key that Django automatically adds to each model.
