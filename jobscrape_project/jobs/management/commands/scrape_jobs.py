@@ -1,5 +1,6 @@
 import json
 from django.core.management.base import BaseCommand
+import time
 
 from utils.job_scraper import JobScraper
 
@@ -7,6 +8,8 @@ class Command(BaseCommand):
     help = "Command to start scraping jobs"
 
     def handle(self, *args, **kwargs):
+        start_time = time.time()
+
         # Load the websites configuration
         with open('data/websites.json', 'r') as f:
             websites = json.load(f)
@@ -22,3 +25,8 @@ class Command(BaseCommand):
 
         for job in all_job_listings:
             self.stdout.write(self.style.SUCCESS(f"Scraped job: {job}"))
+        
+        time_difference = time.time() - start_time
+        print(f'Scraping time: %.2f seconds.' % time_difference)
+    
+    
