@@ -19,7 +19,7 @@ class Company(models.Model):
         return JobListing.objects.filter(company=self).count()
 
     def jobs_posted_today(self):
-        return JobListing.objects.filter(company=self, date_posted__date=timezone.now().date()).count()
+        return JobListing.objects.filter(company=self, discovered_at__date=timezone.now().date()).count()
     
     # when you convert a Company object to JSON, these fields can be accessed as:
     # company.job_count and company.jobs_posted_today
@@ -36,6 +36,7 @@ class JobListing(models.Model):
     link = models.URLField(max_length=500, null=True)
     hash = models.CharField(max_length=32, unique=True, null=True)  # MD5 hash length is 32
     to_be_deleted = models.BooleanField(default=False)
+    discovered_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
