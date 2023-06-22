@@ -1,11 +1,19 @@
 from django.db import models
 from django.utils import timezone
 
+class Tag(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.name
+
 class Company(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200, null=True)
-    logo = models.ImageField(upload_to='company_logos/', null=True, blank=True)  # if you want to add logos to companies
+    logo = models.URLField(max_length=200, null=True) 
     description = models.TextField(null=True)
+    career_url = models.URLField(max_length=200, null=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def job_count(self):
         return JobListing.objects.filter(company=self).count()
@@ -24,7 +32,6 @@ class JobListing(models.Model):
     title = models.CharField(max_length=200, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     location = models.CharField(max_length=200, null=True)
-    description = models.TextField(null=True)
     date_posted = models.DateTimeField(blank=True, null=True)
     link = models.URLField(max_length=500, null=True)
     hash = models.CharField(max_length=32, unique=True, null=True)  # MD5 hash length is 32

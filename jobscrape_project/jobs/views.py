@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q
 
 
 from jobs.models import JobListing, Company
@@ -30,6 +31,16 @@ class CompanyViewSet(viewsets.ModelViewSet):
     serializer_class = CompanySerializer
     pagination_class = StandardResultsSetPagination
 
+    def get_queryset(self):
+        queryset = Company.objects.all()
+        
+        tags = self.request.query_params.getlist('tag', None)
+        if tags:
+            for tag in tags:
+                queryset = queryset.filter(tags__name__iexact=tag)
+
+        return queryset
+    
     @action(detail=True)
     def jobs(self, request, pk=None):
         jobs = JobListing.objects.filter(company_id=pk)

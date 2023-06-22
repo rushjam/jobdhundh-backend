@@ -1,10 +1,16 @@
 from rest_framework import serializers
-from .models import JobListing
-from .models import Company
+from .models import JobListing, Company, Tag
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['id', 'name']
 
 class CompanySerializer(serializers.ModelSerializer):
     job_count = serializers.IntegerField(read_only=True)
     jobs_posted_today = serializers.IntegerField(read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+
     
     class Meta:
         model = Company

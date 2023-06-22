@@ -12,9 +12,9 @@ from selenium.webdriver.common.by import By
 
 from selenium.common.exceptions import NoSuchElementException
 from requests.exceptions import RequestException
+from selenium.common.exceptions import WebDriverException
 
-from jobs.models import JobListing
-from jobs.models import Company
+from jobs.models import JobListing, Company, Tag
 
 # Initialize a logger
 logging.basicConfig(level=logging.INFO)
@@ -39,7 +39,8 @@ class JobScraper:
             chrome_options.add_argument("--headless")
 
         # Initialize the Chrome driver
-        self.driver = webdriver.Chrome(options=chrome_options)
+        # self.driver = webdriver.Chrome(options=chrome_options)
+        self.driver = webdriver.Chrome()
 
     def __del__(self):
         self.driver.quit()
@@ -97,9 +98,17 @@ class JobScraper:
     def load_more(self, load_more_selector):
         try:
             load_more_button = self.driver.find_element(By.CSS_SELECTOR, load_more_selector)
-            if load_more_button.text == 'Load more':
+            last_height = self.driver.execute_script("return document.body.scrollHeight")
+
+            if load_more_button.text:
                 load_more_button.click()
+                
                 time.sleep(7)
+                new_height = self.driver.execute_script("return document.body.scrollHeight")
+                if last_height == new_height:
+                    return False
+                last_height = new_height
+
                 return True
             else:
                 return False
@@ -109,9 +118,16 @@ class JobScraper:
     def navigate_next_page(self, next_page_selector):
         try:
             if next_page_selector is not None and isinstance(next_page_selector, str):
-                next_button = self.driver.find_elements(By.CSS_SELECTOR, next_page_selector)
-                if next_button:
-                    next_button[-1].click()
+                next_page_element = self.driver.find_elements(By.CSS_SELECTOR, next_page_selector)
+                if next_page_element:
+                    try:
+                        # Try clicking the element first
+                        next_page_element[-1].click()
+                    except WebDriverException:
+                        # If clicking fails, try navigating using 'href' attribute
+                        next_page_url = next_page_element[-1].get_attribute("href")
+                        if next_page_url:
+                            self.driver.get(next_page_url)
                     time.sleep(7)
                     return True
             return False
@@ -135,26 +151,31 @@ class JobScraper:
         return BeautifulSoup(html, 'html.parser')
 
     def scrape_jobs(self, website_config):
-        # Get the company name
-        company_name = website_config.get('company_name', "Not Disclosing")
-
-        # Try to get the company by name, create it if it does not exist
-        company, created = Company.objects.get_or_create(name=company_name)
-
-        # Mark only this company's jobs as "to be deleted"
-        JobListing.objects.filter(company=company).update(to_be_deleted=True)
-
         url = website_config['url']
         load_more_selector = website_config.get('load_more_selector', None)
         infinite_scroll = website_config.get('infinite_scroll', False)
         next_page_selector = website_config.get('next_page_selector', None)
 
-        all_job_listings = self.load_website(url, load_more_selector, infinite_scroll, next_page_selector, website_config)
-        
-        # Delete only this company's jobs that are still marked as "to_be_deleted"
-        JobListing.objects.filter(to_be_deleted=True, company=company).delete()
-        
+        # We are getting or creating the company outside the loop.
+        company_name = website_config.get('company_name', "Not Disclosing")
+        company, created = Company.objects.get_or_create(name=company_name)
+        if created:
+            # If the company is newly created
+            company_logo = website_config.get('company_logo', None)
+            company_desc = website_config.get('company_desc', None)
+            company_career_url = website_config.get('company_career_url', None)
+            company_tags = website_config.get('company_tags', [])  # This should be a list of tag names
+            # Add tags to the company
+            for tag_name in company_tags:
+                tag, created = Tag.objects.get_or_create(name=tag_name)
+                company.tags.add(tag)
+            company.logo = company_logo
+            company.description = company_desc
+            company.career_url = company_career_url
+            company.save()
 
+        all_job_listings = self.load_website(url, load_more_selector, infinite_scroll, next_page_selector, website_config)
+        JobListing.objects.filter(to_be_deleted=True, company=company).delete()
         return all_job_listings
 
     @staticmethod
@@ -166,24 +187,25 @@ class JobScraper:
             selected_element = element.select_one(selector)
             return selected_element.get_text(strip=True) if selected_element else None
 
-        def get_link(element, selector):
-            if selector is None:
+        def get_link(element, selector, link_in_job_selector):
+            if link_in_job_selector:  # If the job link is in the job_selector
+                return element['href'] if 'href' in element.attrs else None
+            elif selector is None:  # If the job link is not in the job_selector
                 logger.warning(f"Selector for element '{element}' is missing in the website configuration.")
                 return None
-            selected_element = element.select_one(selector)
-            return selected_element['href'] if selected_element and 'href' in selected_element.attrs else None
+            else:
+                selected_element = element.select_one(selector)
+                return selected_element['href'] if selected_element and 'href' in selected_element.attrs else None
 
         # Extract details
         company_name = website_config.get('company_name', "Not Disclosing")
-        # Try to get the company by name, create it if it does not exist
-        company, created = Company.objects.get_or_create(name=company_name)
+        company = Company.objects.get(name=company_name)
+
 
         title = get_text(job_element, website_config.get('title_selector', None))
         location = get_text(job_element, website_config.get('location_selector', None))
         date_posted = None
-        description = get_text(job_element, website_config.get('description_selector', None))
-        link = get_link(job_element, website_config.get('link_selector', None))
-        
+        link = get_link(job_element, website_config.get('link_selector', None), website_config.get('link_in_job_selector', False))     
 
         # Create job data
         job_data = {
@@ -191,7 +213,6 @@ class JobScraper:
             'title': title,
             'location': location,
             'date_posted': date_posted,
-            'description': description,
             'link': link,
         }
 
@@ -208,7 +229,6 @@ class JobScraper:
                 title=title,
                 location=location,
                 date_posted=date_posted,
-                description=description,
                 link=link,
                 hash=job_hash,  # Save the hash
                 to_be_deleted=False,  # Newly scraped jobs are not marked as "to be deleted"
