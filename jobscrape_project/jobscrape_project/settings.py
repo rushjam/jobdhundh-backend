@@ -92,7 +92,7 @@ DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 DATABASES = {
     'default': {
     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': 'jobscrape',
+    'NAME': 'jobscrape1',
     'USER': 'doadmin',
     'PASSWORD': 'AVNS_Lti7z9F-CzePWuWG5vx',
     'HOST': 'db-postgresql-sfo3-81757-do-user-8736550-0.b.db.ondigitalocean.com',
