@@ -9,12 +9,15 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from selenium.common.exceptions import NoSuchElementException
 from requests.exceptions import RequestException
 from selenium.common.exceptions import WebDriverException
 
 from jobs.models import JobListing, Company, Tag
+
 
 # Initialize a logger
 logging.basicConfig(level=logging.INFO)
@@ -116,17 +119,23 @@ class JobScraper:
             return False
 
     def navigate_next_page(self, next_page_selector):
-        try:
+        try:     
             if next_page_selector is not None and isinstance(next_page_selector, str):
                 next_page_element = self.driver.find_elements(By.CSS_SELECTOR, next_page_selector)
+                # print(next_page_selector[-1].__getattribute__("href"))
                 if next_page_element:
                     try:
                         # Try clicking the element first
                         next_page_element[-1].click()
                     except WebDriverException:
                         # If clicking fails, try navigating using 'href' attribute
+                        print("click failed")
                         next_page_url = next_page_element[-1].get_attribute("href")
-                        if next_page_url:
+                        print("click failedd", next_page_url)
+
+                        if not next_page_url:
+                            return False
+                        else:
                             self.driver.get(next_page_url)
                     time.sleep(7)
                     return True
@@ -134,7 +143,7 @@ class JobScraper:
         except Exception as e:
             logger.error(f"Error in navigating to the next page: {e}")
             return False
-
+    
 
     def infinite_scroll_page(self):
         last_height = self.driver.execute_script("return document.body.scrollHeight")
@@ -201,7 +210,6 @@ class JobScraper:
         company_name = website_config.get('company_name', "Not Disclosing")
         company = Company.objects.get(name=company_name)
 
-
         title = get_text(job_element, website_config.get('title_selector', None))
         location = get_text(job_element, website_config.get('location_selector', None))
         date_posted = None
@@ -209,38 +217,32 @@ class JobScraper:
 
         # Create job data
         job_data = {
-            'id': job_id,
             'title': title,
-            'location': location,
-            'date_posted': date_posted,
             'link': link,
         }
 
         # Create a hash of the job data
         job_hash = create_hash(job_data)
-       
-        # Check if a job with the same hash already exists in the database
-        job_exists = JobListing.objects.filter(hash=job_hash)
 
-        if not job_exists.exists():
-            # Create a new Job object and save it into the database
-            job = JobListing(
-                company=company,
-                title=title,
-                location=location,
-                date_posted=date_posted,
-                link=link,
-                hash=job_hash,  # Save the hash
-                to_be_deleted=False,  # Newly scraped jobs are not marked as "to be deleted"
-            )
-            job.save()
-        else:
+        # Get or create a Job object
+        job, created = JobListing.objects.get_or_create(
+            hash=job_hash,
+            defaults={
+                'company': company,
+                'title': title,
+                'location': location,
+                'date_posted': date_posted,
+                'link': link,
+                'to_be_deleted': False,  # Newly scraped jobs are not marked as "to be deleted"
+            }
+        )
+
+        if not created:
             logger.info(f"Job already exists: {link}")
             # If the job exists, unmark it as "to_be_deleted" and update the hash
-            job = job_exists.first()  # Fetch the existing job
             job.to_be_deleted = False
-            job.hash = job_hash  # Update the hash
             job.save()
 
         return job_data
+
 

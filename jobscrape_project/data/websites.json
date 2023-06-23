@@ -88,5 +88,41 @@
     "load_more_selector": "div.uwa-capture div.css-bzyevI div.css-PKJb:nth-child(2) div.css-ofGld:nth-child(2) div.container-inner.css-fVLpfI div.css-fyomcu div.css-bnia-Dv:nth-child(5) > button.css-kTiVgx",
     "infinite_scroll": null,
     "next_page_selector": null
+  },
+  {
+    "company_name": "Lyft",
+    "company_logo": "https://res.cloudinary.com/duccafxjv/image/upload/v1687292060/job-dhundh/company-logo/lyft_b5mehd.png",
+    "company_desc": "Lyft, Inc. is an American company offering mobility as a service, ride-hailing, vehicles for hire, motorized scooters, a bicycle-sharing system, rental cars, and food delivery in the United States and select cities in Canada.",
+    "company_tags": ["Tech", "Transportation"],
+    "company_career_url": "https://www.lyft.com/careers",
+    "url": "https://www.lyft.com/careers#openings?location=san%2520francisco%252C%2520ca",
+    "dynamic": true,
+    "job_selector": "article.sc-69512a0c-0.efnciy span.sc-1s25830-0.fpvCMm section.sc-2da3b00e-0.bNxgGg:nth-child(5) div:nth-child(1) div.sc-132wtts-0.ilrsoV div.sc-q480ss-0.euPhRP:nth-child(2) div:nth-child(19) a",
+    "title_selector": ".sc-cx1xxi-0.jXizvo",
+    "location_selector": ".sc-cx1xxi-0.LySZL",
+    "date_selector": null,
+    "link_in_job_selector": true,
+    "link_selector": null,
+    "load_more_selector": "article.sc-69512a0c-0.efnciy span.sc-1s25830-0.fpvCMm section.sc-2da3b00e-0.bNxgGg:nth-child(5) div:nth-child(1) div.sc-132wtts-0.ilrsoV div.sc-q480ss-0.euPhRP:nth-child(2) > div:nth-child(19)",
+    "infinite_scroll": null,
+    "next_page_selector": null
+  },
+  {
+    "company_name": "Cognizant",
+    "company_logo": "https://res.cloudinary.com/duccafxjv/image/upload/v1687481002/cognizant_awbuft.jpg",
+    "company_desc": "Cognizant is an American multinational information technology services and consulting company. It is headquartered in Teaneck, New Jersey, U.S. Cognizant is part of the NASDAQ-100 and trades under CTSH.",
+    "company_tags": ["Tech", "Software"],
+    "company_career_url": "https://careers.cognizant.com/",
+    "url": "https://careers.cognizant.com/professionals/us/en/c/business-processes-jobs",
+    "dynamic": true,
+    "job_selector": "body.category-page:nth-child(9) div.ph-page:nth-child(3) div.body-wrapper.ph-page-container div.container div.ph-facet-and-search-results-area.row div.results-state.container div.row div.col-md-8.col-sm-7 section.ph-widget div.ph-search-results-v2-default-theme5.ph-widget-target.au-target div.ph-search-results-area div.phs-facet-results-block div:nth-child(1) div.phs-jobs-list div.content-block ul.au-target li.jobs-list-item",
+    "title_selector": "div.information span:nth-child(2) a.au-target div.job-title > span:nth-child(1)",
+    "location_selector": "div.information p.job-info:nth-child(3) span.au-target:nth-child(2) > span.job-location",
+    "date_selector": null,
+    "link_in_job_selector": false,
+    "link_selector": "div.information span:nth-child(2) a.au-target",
+    "load_more_selector": null,
+    "infinite_scroll": null,
+    "next_page_selector": "body.category-page:nth-child(9) div.ph-page:nth-child(3) div.body-wrapper.ph-page-container div.container div.ph-facet-and-search-results-area.row div.results-state.container div.row div.col-md-8.col-sm-7 section.ph-widget div.ph-search-results-v2-default-theme5.ph-widget-target.au-target div.ph-search-results-area div.phs-facet-results-block div.pagination-block.au-target:nth-child(2) ul.pagination.au-target li:nth-child(12) > a.au-target"
   }
 ]
