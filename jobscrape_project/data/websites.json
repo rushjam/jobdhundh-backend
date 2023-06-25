@@ -72,6 +72,7 @@
     "next_page_selector": ".pagination__next span a"
   },
   {
+    "id":1,
     "company_name": "Uber",
     "company_logo": "https://res.cloudinary.com/duccafxjv/image/upload/v1687385310/Uber_o7lt4t.png",
     "company_desc": "Uber Technologies, Inc, commonly referred to as Uber, is a transportation conglomerate that mainly provides taxi services where individuals can hail a taxi in an app on their phone.",
@@ -109,7 +110,7 @@
   },
   {
     "company_name": "Cognizant",
-    "company_logo": "https://res.cloudinary.com/duccafxjv/image/upload/v1687481002/cognizant_awbuft.jpg",
+    "company_logo": "https://res.cloudinary.com/duccafxjv/image/upload/v1687636952/cognizant_wew7gx.jpg",
     "company_desc": "Cognizant is an American multinational information technology services and consulting company. It is headquartered in Teaneck, New Jersey, U.S. Cognizant is part of the NASDAQ-100 and trades under CTSH.",
     "company_tags": ["Tech", "Software"],
     "company_career_url": "https://careers.cognizant.com/",
@@ -124,5 +125,43 @@
     "load_more_selector": null,
     "infinite_scroll": null,
     "next_page_selector": "body.category-page:nth-child(9) div.ph-page:nth-child(3) div.body-wrapper.ph-page-container div.container div.ph-facet-and-search-results-area.row div.results-state.container div.row div.col-md-8.col-sm-7 section.ph-widget div.ph-search-results-v2-default-theme5.ph-widget-target.au-target div.ph-search-results-area div.phs-facet-results-block div.pagination-block.au-target:nth-child(2) ul.pagination.au-target li:nth-child(12) > a.au-target"
+  },
+  {
+    "company_name": "Infosys",
+    "company_logo": "https://res.cloudinary.com/duccafxjv/image/upload/v1687636837/infosys_q3gvpq.png",
+    "company_desc": "Infosys Limited is an Indian multinational information technology company that provides business consulting, information technology and outsourcing services. The company was founded in Pune and is headquartered in Bangalore.",
+    "company_tags": ["Tech", "Software"],
+    "company_career_url": "https://www.infosys.com/careers/usa/",
+    "url": "https://digitalcareers.infosys.com/infosys/global-careers?location=USA&per_page=100&page=1",
+    "dynamic": true,
+    "job_selector": "body.whiteBody.infosys-page:nth-child(2) div.template-content.rendered.non-editable.js-page-custom-css-section:nth-child(2) div.editable-sections:nth-child(2) div.editable-sections.view-mode.page-body:nth-child(6) div.user-sortable div.sortable-section.js-section-container.js-text-listing-section.custom_text_listing_3 div.section-content div.text-listing-section.type-section.js-section.js-headline-listing-section div.text-listing-container.editable div.job-listing div.listing-container.subsection div.text-section.jobs-text-section div.editable-container div.listing.js-save-content.actionable  a",
+    "title_selector": ".job-title",
+    "location_selector": "div.job-location.js-job-city:nth-child(2) > div.location-inline:nth-child(1)",
+    "date_selector": null,
+    "link_in_job_selector": true,
+    "link_selector": null,
+    "load_more_selector": null,
+    "infinite_scroll": null,
+    "next_page_selector": "div.job-listing div#jobs_text_section div.editable-container .listing div.classic-custom-pagination nav .text-left .navigation-container .pagination-button.right "
+  },
+  {
+    "company_name": "Capgimini",
+    "company_logo": "https://res.cloudinary.com/duccafxjv/image/upload/v1687641876/capgimini_dizacq.png",
+    "company_desc": "Capgemini SE is a multinational information technology services and consulting company, headquartered in Paris, France.",
+    "company_tags": ["Software", "Consulting", "IT Management", "Information Technology"],
+    "company_career_url": "https://www.capgemini.com/us-en/join-us",
+    "url": "https://www.capgemini.com/us-en/join-us/#country_code=us-en&size=15",
+    "dynamic": true,
+    "job_selector": "#main-content div.content div.container .filters.filters--table section.table.filters-content .table-tr.filter-box.tag-active.joblink",
+    "title_selector": "div.table-td.table-title:nth-child(1) > div:nth-child(2)",
+    "location_selector": "div.table-td.table-title.td-style:nth-child(3) > div:nth-child(2)",
+    "date_selector": null,
+    "link_in_job_selector": true,
+    "link_selector": null,
+    "load_more_selector": "#main-content div.content div.container .filters.filters--table div.filters-bottom a",
+    "is_load_more_button_tag": false,
+    "infinite_scroll": null,
+    "next_page_selector": null
   }
 ]
+

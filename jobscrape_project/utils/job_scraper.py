@@ -18,7 +18,6 @@ from selenium.common.exceptions import WebDriverException
 
 from jobs.models import JobListing, Company, Tag
 
-
 # Initialize a logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -103,19 +102,25 @@ class JobScraper:
             load_more_button = self.driver.find_element(By.CSS_SELECTOR, load_more_selector)
             last_height = self.driver.execute_script("return document.body.scrollHeight")
 
-            if load_more_button.text:
-                load_more_button.click()
-                
-                time.sleep(7)
-                new_height = self.driver.execute_script("return document.body.scrollHeight")
-                if last_height == new_height:
-                    return False
-                last_height = new_height
-
-                return True
-            else:
+            try:
+                # Use JavaScript to click the button
+                self.driver.execute_script("arguments[0].click();", load_more_button)
+            except WebDriverException as e:
+                # If an error occurs, print it out and return False
+                print(f"An error occurred while trying to click the load more button: {e}")
                 return False
+
+            time.sleep(7)
+            new_height = self.driver.execute_script("return document.body.scrollHeight")
+            if last_height == new_height:
+                return False
+            last_height = new_height
+
+            return True
         except NoSuchElementException:
+            return False
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
             return False
 
     def navigate_next_page(self, next_page_selector):
@@ -123,15 +128,18 @@ class JobScraper:
             if next_page_selector is not None and isinstance(next_page_selector, str):
                 next_page_element = self.driver.find_elements(By.CSS_SELECTOR, next_page_selector)
                 # print(next_page_selector[-1].__getattribute__("href"))
+                print("next_page_selector", next_page_selector)
                 if next_page_element:
+                    
+                    print("im here!", next_page_selector)
                     try:
                         # Try clicking the element first
                         next_page_element[-1].click()
+                        
                     except WebDriverException:
                         # If clicking fails, try navigating using 'href' attribute
-                        print("click failed")
+                        print("M here also")
                         next_page_url = next_page_element[-1].get_attribute("href")
-                        print("click failedd", next_page_url)
 
                         if not next_page_url:
                             return False
@@ -143,7 +151,7 @@ class JobScraper:
         except Exception as e:
             logger.error(f"Error in navigating to the next page: {e}")
             return False
-    
+
 
     def infinite_scroll_page(self):
         last_height = self.driver.execute_script("return document.body.scrollHeight")
@@ -244,5 +252,3 @@ class JobScraper:
             job.save()
 
         return job_data
-
-
