@@ -28,7 +28,7 @@ class JobViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        queryset = JobListing.objects.all().order_by('-discovered_at')
+        queryset = JobListing.objects.all().order_by('title')
         
         # Print the count before filtering
         print("Count before filtering: ", queryset.count())

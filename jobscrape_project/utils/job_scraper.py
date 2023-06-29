@@ -1,4 +1,7 @@
+from .date_conversion import convert_date_format
+
 import time
+from datetime import datetime
 import requests
 import logging
 import hashlib
@@ -181,6 +184,7 @@ class JobScraper:
             company_logo = website_config.get('company_logo', None)
             company_desc = website_config.get('company_desc', None)
             company_career_url = website_config.get('company_career_url', None)
+            compnany_job_base_url = website_config.get('compnany_job_base_url', None)
             company_tags = website_config.get('company_tags', [])  # This should be a list of tag names
             # Add tags to the company
             for tag_name in company_tags:
@@ -189,6 +193,7 @@ class JobScraper:
             company.logo = company_logo
             company.description = company_desc
             company.career_url = company_career_url
+            company.job_base_url = compnany_job_base_url
             company.save()
 
         all_job_listings = self.load_website(url, load_more_selector, infinite_scroll, next_page_selector, website_config)
@@ -220,7 +225,17 @@ class JobScraper:
 
         title = get_text(job_element, website_config.get('title_selector', None))
         location = get_text(job_element, website_config.get('location_selector', None))
+        date_posted_str = get_text(job_element, website_config.get('date_selector', None))
+        # Updated date_posted conversion
         date_posted = None
+        print("date1", date_posted_str)
+        if date_posted_str is not None:
+            try:
+                date_posted = convert_date_format(date_posted_str)
+            except ValueError as ve:
+                logger.warning(f"Failed to convert '{date_posted_str}' to a date. Error: {ve}")
+        print("date2", date_posted)
+
         link = get_link(job_element, website_config.get('link_selector', None), website_config.get('link_in_job_selector', False))     
 
         # Create job data

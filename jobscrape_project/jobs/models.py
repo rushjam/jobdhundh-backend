@@ -13,6 +13,7 @@ class Company(models.Model):
     logo = models.URLField(max_length=200, null=True) 
     description = models.TextField(null=True)
     career_url = models.URLField(max_length=200, null=True)
+    job_base_url = models.URLField(max_length=200, null=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
     def job_count(self):

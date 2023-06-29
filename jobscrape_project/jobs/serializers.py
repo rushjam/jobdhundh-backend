@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from urllib.parse import urljoin
+from django.utils.timezone import localtime
 from .models import JobListing, Company, Tag
 
 class TagSerializer(serializers.ModelSerializer):
@@ -22,12 +24,47 @@ class JobCompanySerializer(serializers.ModelSerializer):
 
 class JobSerializer(serializers.ModelSerializer):
     company = JobCompanySerializer(read_only=True)
+    date_posted = serializers.SerializerMethodField()
+    discovered_at = serializers.SerializerMethodField()
+    link = serializers.SerializerMethodField()
+
 
     class Meta:
         model = JobListing
         fields = ['id', 'company', 'title', 'location', 'date_posted', 'link', 'discovered_at']
 
+    def get_date_posted(self, obj):
+        if obj.date_posted is None:
+            return None
+        return localtime(obj.date_posted).strftime('%b %d, %Y')
+    def get_discovered_at(self, obj):
+        return localtime(obj.discovered_at).strftime('%b %d, %Y')
+    def get_link(self, obj):
+        if obj.company.job_base_url:
+            full_url = urljoin(obj.company.job_base_url, obj.link)
+        else:
+            full_url = obj.link
+        return full_url
+
 class CompnayAllJobSerializer(serializers.ModelSerializer):
+    date_posted = serializers.SerializerMethodField()
+    discovered_at = serializers.SerializerMethodField()
+    link = serializers.SerializerMethodField()
+
+
     class Meta:
         model = JobListing
         fields = ['id', 'title', 'location', 'date_posted', 'link', 'discovered_at']
+
+    def get_date_posted(self, obj):
+        if obj.date_posted is None:
+            return None
+        return localtime(obj.date_posted).strftime('%b %d, %Y')
+    def get_discovered_at(self, obj):
+        return localtime(obj.discovered_at).strftime('%b %d, %Y')
+    def get_link(self, obj):
+        if obj.company.job_base_url:
+            full_url = urljoin(obj.company.job_base_url, obj.link)
+        else:
+            full_url = obj.link
+        return full_url
