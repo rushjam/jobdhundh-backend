@@ -38,7 +38,12 @@ class JobViewSet(viewsets.ModelViewSet):
             cutoff_date = timezone.now() - timedelta(days=int(days))
             queryset = queryset.filter(Q(date_posted__isnull=False, date_posted__gte=cutoff_date) |
                                        Q(date_posted__isnull=True, discovered_at__gte=cutoff_date))
+        # Retrieve the 'search' parameter
+        search = self.request.query_params.get('search', None)
 
+        # Apply the filtering if 'search' is not None
+        if search is not None:
+            queryset = queryset.filter(title__icontains=search)
 
         return queryset
 
