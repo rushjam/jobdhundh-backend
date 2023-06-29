@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from django.db.models import Q, Case, When, Value, DateTimeField
+from django.db.models import Q, Case, When, Value, DateTimeField, IntegerField
 from datetime import datetime, timezone, timedelta
 from django.utils import timezone
 
@@ -37,8 +37,22 @@ class JobViewSet(viewsets.ModelViewSet):
         # Apply the filtering if 'days' is not None
         if days is not None:
             cutoff_date = timezone.now() - timedelta(days=int(days))
-            queryset = queryset.filter(Q(date_posted__isnull=False, date_posted__gte=cutoff_date) |
-                                       Q(date_posted__isnull=True, discovered_at__gte=cutoff_date))
+            queryset = queryset.filter(
+                Q(date_posted__isnull=False, date_posted__gte=cutoff_date) |
+                Q(date_posted__isnull=True, discovered_at__gte=cutoff_date)
+            ).annotate(
+                ordering_date=Case(
+                    When(date_posted__isnull=False, then='date_posted'),
+                    When(date_posted__isnull=True, then='discovered_at'),
+                    output_field=DateTimeField()
+                ),
+                priority=Case(
+                    When(date_posted__isnull=False, then=Value(0)),
+                    When(date_posted__isnull=True, then=Value(1)),
+                    output_field=IntegerField()
+                )
+            ).order_by('priority', '-ordering_date')
+
         if search is not None:
             queryset = queryset.filter(title__icontains=search)
         if location is not None:
