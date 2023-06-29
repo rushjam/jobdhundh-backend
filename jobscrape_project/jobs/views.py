@@ -30,20 +30,19 @@ class JobViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = JobListing.objects.all().order_by('title')
         
-        # Retrieve the 'days' parameter
         days = self.request.query_params.get('days', None)
+        search = self.request.query_params.get('search', None)
+        location = self.request.query_params.get('location', None)
 
         # Apply the filtering if 'days' is not None
         if days is not None:
             cutoff_date = timezone.now() - timedelta(days=int(days))
             queryset = queryset.filter(Q(date_posted__isnull=False, date_posted__gte=cutoff_date) |
                                        Q(date_posted__isnull=True, discovered_at__gte=cutoff_date))
-        # Retrieve the 'search' parameter
-        search = self.request.query_params.get('search', None)
-
-        # Apply the filtering if 'search' is not None
         if search is not None:
             queryset = queryset.filter(title__icontains=search)
+        if location is not None:
+            queryset = queryset.filter(location__icontains=location)
 
         return queryset
 
