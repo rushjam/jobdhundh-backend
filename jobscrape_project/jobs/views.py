@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from django.db.models import Q
+from django.db.models import Q, Case, When, Value, DateTimeField
 from datetime import datetime, timezone, timedelta
 from django.utils import timezone
 
@@ -30,24 +30,16 @@ class JobViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = JobListing.objects.all().order_by('title')
         
-        # Print the count before filtering
-        print("Count before filtering: ", queryset.count())
-        
+        # Retrieve the 'days' parameter
         days = self.request.query_params.get('days', None)
+
+        # Apply the filtering if 'days' is not None
         if days is not None:
-            # Filter jobs discovered within the last `days` days
             cutoff_date = timezone.now() - timedelta(days=int(days))
-            
-            # Print the days and cutoff_date
-            print("Days from request: ", days)
-            print("Cutoff date: ", cutoff_date)
-            
-            queryset = queryset.filter(discovered_at__gte=cutoff_date)
-        
-        # Print the count after filtering and the queryset itself
-        print("Count after filtering: ", queryset.count())
-        print(queryset)
-        
+            queryset = queryset.filter(Q(date_posted__isnull=False, date_posted__gte=cutoff_date) |
+                                       Q(date_posted__isnull=True, discovered_at__gte=cutoff_date))
+
+
         return queryset
 
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -71,9 +63,9 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
         days = self.request.query_params.get('days', None)
         if days is not None:
-            # Filter jobs discovered within the last `days` days
             cutoff_date = timezone.now() - timedelta(days=int(days))
-            jobs = jobs.filter(discovered_at__gte=cutoff_date)
+            jobs = jobs.filter(Q(date_posted__isnull=False, date_posted__gte=cutoff_date) |
+                            Q(date_posted__isnull=True, discovered_at__gte=cutoff_date))
 
         page = self.paginate_queryset(jobs)
         if page is not None:

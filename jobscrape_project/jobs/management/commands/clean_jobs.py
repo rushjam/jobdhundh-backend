@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Calculate the date a month ago from now
-        one_month_ago = timezone.now() - timedelta(days=30)
+        one_month_ago = timezone.now() - timedelta(days=45)
 
         # Get all jobs older than a month, considering both date_posted and discovered_at
         old_jobs = JobListing.objects.filter(
