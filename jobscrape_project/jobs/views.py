@@ -1,13 +1,24 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q, Case, When, Value, DateTimeField, IntegerField
 from datetime import datetime, timezone, timedelta
 from django.utils import timezone
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
 from jobs.models import JobListing, Company
 from jobs.serializers import JobSerializer, CompanySerializer, CompnayAllJobSerializer
+
+from jobs.job_titles import job_titles
+
+
+SYNONYMS = {
+    "software developer": ["software developer","software engineer"],
+    "software engineer": ["software developer"],
+    "programmer": ["developer", "engineer", "coder", "dev"],
+    'frontend developer': ['front-end']
+}
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 21
@@ -27,6 +38,7 @@ class JobViewSet(viewsets.ModelViewSet):
     serializer_class = JobSerializer
     pagination_class = StandardResultsSetPagination
 
+    
     def get_queryset(self):
         queryset = JobListing.objects.all().order_by('title')
         
@@ -53,12 +65,40 @@ class JobViewSet(viewsets.ModelViewSet):
                 )
             ).order_by('priority', '-ordering_date')
 
-        if search is not None:
-            queryset = queryset.filter(title__icontains=search)
+        # if search is not None and search != '':
+        #     vector = SearchVector('title', config='english')
+        #     query = SearchQuery(search, search_type='plain')
+        #     queryset = queryset.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.01).order_by('-rank')
+        if search is not None and search != '':
+            vector = SearchVector('title', config='english')
+            # Look up any synonyms for the search term
+            synonyms = SYNONYMS.get(search.lower(), [])
+            # Create a SearchQuery for the search term and any synonyms
+            query = SearchQuery(search, search_type='plain')
+            for synonym in synonyms:
+                query |= SearchQuery(synonym, search_type='plain')
+            queryset = queryset.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.01).order_by('-rank')
+
         if location is not None:
             queryset = queryset.filter(location__icontains=location)
 
         return queryset
+
+
+@api_view(['GET'])
+def job_title_autocomplete(request):
+    # Get the 'term' sent by the client
+    search_term = request.GET.get('term')
+
+    # Ensure it's not None and is a valid string
+    if not search_term:
+        return Response([])
+
+    # Match job titles from the predefined list
+    matching_jobs = [title for title in job_titles if search_term.lower() in title.lower()][:10]  # Limit to 10 results
+
+    return Response(matching_jobs)
+
 
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
