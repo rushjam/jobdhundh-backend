@@ -20,6 +20,20 @@ SYNONYMS = {
     'frontend developer': ['front-end']
 }
 
+@api_view(['GET'])
+def job_title_autocomplete(request):
+    # Get the 'term' sent by the client
+    search_term = request.GET.get('term')
+
+    # Ensure it's not None and is a valid string
+    if not search_term:
+        return Response([])
+
+    # Match job titles from the predefined list
+    matching_jobs = [title for title in job_titles if search_term.lower() in title.lower()][:10]  # Limit to 10 results
+
+    return Response(matching_jobs)
+
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 21
     page_size_query_param = 'page_size'
@@ -69,8 +83,9 @@ class JobViewSet(viewsets.ModelViewSet):
         #     vector = SearchVector('title', config='english')
         #     query = SearchQuery(search, search_type='plain')
         #     queryset = queryset.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.01).order_by('-rank')
+        print(search)
         if search is not None and search != '':
-            vector = SearchVector('title', config='english')
+            vector = SearchVector('title')
             # Look up any synonyms for the search term
             synonyms = SYNONYMS.get(search.lower(), [])
             # Create a SearchQuery for the search term and any synonyms
@@ -78,26 +93,15 @@ class JobViewSet(viewsets.ModelViewSet):
             for synonym in synonyms:
                 query |= SearchQuery(synonym, search_type='plain')
             queryset = queryset.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.01).order_by('-rank')
-
+        # if search is not None:
+        #     queryset = queryset.filter(title__icontains=search)
         if location is not None:
             queryset = queryset.filter(location__icontains=location)
 
         return queryset
 
 
-@api_view(['GET'])
-def job_title_autocomplete(request):
-    # Get the 'term' sent by the client
-    search_term = request.GET.get('term')
 
-    # Ensure it's not None and is a valid string
-    if not search_term:
-        return Response([])
-
-    # Match job titles from the predefined list
-    matching_jobs = [title for title in job_titles if search_term.lower() in title.lower()][:10]  # Limit to 10 results
-
-    return Response(matching_jobs)
 
 
 class CompanyViewSet(viewsets.ModelViewSet):

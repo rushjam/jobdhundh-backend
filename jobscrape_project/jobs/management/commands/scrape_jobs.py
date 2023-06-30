@@ -16,7 +16,6 @@ class Command(BaseCommand):
 
         # Initialize the scraper
         scraper = JobScraper(driver_path='drivers/chromedriver.exe', dynamic=True)
-
         # Scrape jobs
         all_job_listings = []
         for website in websites:

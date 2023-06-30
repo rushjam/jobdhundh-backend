@@ -171,6 +171,7 @@ class JobScraper:
         return BeautifulSoup(html, 'html.parser')
 
     def scrape_jobs(self, website_config):
+        JobListing.objects.update(to_be_deleted=True)
         url = website_config['url']
         load_more_selector = website_config.get('load_more_selector', None)
         infinite_scroll = website_config.get('infinite_scroll', False)
@@ -225,7 +226,10 @@ class JobScraper:
 
         title = get_text(job_element, website_config.get('title_selector', None))
         location = get_text(job_element, website_config.get('location_selector', None))
+        if location is None or location.strip() == "":
+            location = "United States"
         date_posted_str = get_text(job_element, website_config.get('date_selector', None))
+        
         # Updated date_posted conversion
         date_posted = None
         print("date1", date_posted_str)
