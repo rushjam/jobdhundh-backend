@@ -59,8 +59,8 @@ class JobViewSet(viewsets.ModelViewSet):
         days = self.request.query_params.get('days', None)
         search = self.request.query_params.get('search', None)
         location = self.request.query_params.get('location', None)
-        job_type = self.request.query_params.get('job_type', None)
-        job_category = self.request.query_params.get('category', None)
+        category = self.request.query_params.get('category', None)
+
 
         # Apply the filtering if 'days' is not None
         if days is not None:
@@ -94,9 +94,15 @@ class JobViewSet(viewsets.ModelViewSet):
 
         if location is not None:
             queryset = queryset.filter(location__icontains=location)
-        
-        
 
+
+        if category is not None:
+            queryset = queryset.filter(category__name__iexact=category)
+
+        job_types = self.request.query_params.getlist('job_type', None)
+        if job_types:
+            queryset = queryset.filter(job_type__name__in=job_types)
+            
         return queryset
 
 
