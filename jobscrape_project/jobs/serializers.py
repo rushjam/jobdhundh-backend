@@ -27,12 +27,9 @@ class JobSerializer(serializers.ModelSerializer):
     date_posted = serializers.SerializerMethodField()
     discovered_at = serializers.SerializerMethodField()
     link = serializers.SerializerMethodField()
-
-
-    class Meta:
-        model = JobListing
-        fields = ['id', 'company', 'title', 'location', 'date_posted', 'link', 'discovered_at']
-
+    category = serializers.SerializerMethodField()
+    job_type = serializers.SerializerMethodField()
+    
     def get_date_posted(self, obj):
         if obj.date_posted is None:
             return None
@@ -45,16 +42,23 @@ class JobSerializer(serializers.ModelSerializer):
         else:
             full_url = obj.link
         return full_url
+    def get_category(self, obj):
+        return obj.category.name
+    def get_job_type(self, obj):
+        return obj.job_type.name
+    
+    class Meta:
+        model = JobListing
+        fields = ['id', 'job_type', 'category', 'title', 'location', 'date_posted', 'link', 'discovered_at', 'company']
+
+    
 
 class CompnayAllJobSerializer(serializers.ModelSerializer):
     date_posted = serializers.SerializerMethodField()
     discovered_at = serializers.SerializerMethodField()
     link = serializers.SerializerMethodField()
-
-
-    class Meta:
-        model = JobListing
-        fields = ['id', 'title', 'location', 'date_posted', 'link', 'discovered_at']
+    category = serializers.SerializerMethodField()
+    job_type = serializers.SerializerMethodField()
 
     def get_date_posted(self, obj):
         if obj.date_posted is None:
@@ -68,3 +72,13 @@ class CompnayAllJobSerializer(serializers.ModelSerializer):
         else:
             full_url = obj.link
         return full_url
+    def get_category(self, obj):
+        return obj.category.name
+    def get_job_type(self, obj):
+        return obj.job_type.name
+
+    class Meta:
+        model = JobListing
+        fields = ['id','job_type', 'category', 'title', 'location', 'date_posted', 'link', 'discovered_at']
+
+    

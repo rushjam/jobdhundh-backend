@@ -14,12 +14,14 @@ class Command(BaseCommand):
         with open('data/websites.json', 'r') as f:
             websites = json.load(f)
 
+        job_categories = websites.get('job_categories', {})
+        job_types = websites.get('job_types', {})
         # Initialize the scraper
         scraper = JobScraper(driver_path='drivers/chromedriver.exe', dynamic=True)
         # Scrape jobs
         all_job_listings = []
-        for website in websites:
-            job_listings = scraper.scrape_jobs(website)
+        for website in websites["companies"]:
+            job_listings = scraper.scrape_jobs(website, job_categories, job_types)
             all_job_listings.extend(job_listings)
 
         for job in all_job_listings:

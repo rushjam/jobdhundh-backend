@@ -37,7 +37,7 @@ def job_title_autocomplete(request):
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 21
     page_size_query_param = 'page_size'
-    max_page_size = 1000
+    max_page_size = 21
 
     def get_paginated_response(self, data):
         return Response({
@@ -59,6 +59,8 @@ class JobViewSet(viewsets.ModelViewSet):
         days = self.request.query_params.get('days', None)
         search = self.request.query_params.get('search', None)
         location = self.request.query_params.get('location', None)
+        job_type = self.request.query_params.get('job_type', None)
+        job_category = self.request.query_params.get('category', None)
 
         # Apply the filtering if 'days' is not None
         if days is not None:
@@ -79,11 +81,7 @@ class JobViewSet(viewsets.ModelViewSet):
                 )
             ).order_by('priority', '-ordering_date')
 
-        # if search is not None and search != '':
-        #     vector = SearchVector('title', config='english')
-        #     query = SearchQuery(search, search_type='plain')
-        #     queryset = queryset.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.01).order_by('-rank')
-        print(search)
+
         if search is not None and search != '':
             vector = SearchVector('title')
             # Look up any synonyms for the search term
@@ -93,15 +91,13 @@ class JobViewSet(viewsets.ModelViewSet):
             for synonym in synonyms:
                 query |= SearchQuery(synonym, search_type='plain')
             queryset = queryset.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.01).order_by('-rank')
-        # if search is not None:
-        #     queryset = queryset.filter(title__icontains=search)
+
         if location is not None:
             queryset = queryset.filter(location__icontains=location)
+        
+        
 
         return queryset
-
-
-
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -126,8 +122,21 @@ class CompanyViewSet(viewsets.ModelViewSet):
         days = self.request.query_params.get('days', None)
         if days is not None:
             cutoff_date = timezone.now() - timedelta(days=int(days))
-            jobs = jobs.filter(Q(date_posted__isnull=False, date_posted__gte=cutoff_date) |
-                            Q(date_posted__isnull=True, discovered_at__gte=cutoff_date))
+            jobs = jobs.filter(
+                Q(date_posted__isnull=False, date_posted__gte=cutoff_date) |
+                Q(date_posted__isnull=True, discovered_at__gte=cutoff_date)
+            ).annotate(
+                ordering_date=Case(
+                    When(date_posted__isnull=False, then='date_posted'),
+                    When(date_posted__isnull=True, then='discovered_at'),
+                    output_field=DateTimeField()
+                ),
+                priority=Case(
+                    When(date_posted__isnull=False, then=Value(0)),
+                    When(date_posted__isnull=True, then=Value(1)),
+                    output_field=IntegerField()
+                )
+            ).order_by('priority', '-ordering_date')
 
         page = self.paginate_queryset(jobs)
         if page is not None:

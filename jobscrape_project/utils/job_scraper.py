@@ -19,7 +19,7 @@ from selenium.common.exceptions import NoSuchElementException
 from requests.exceptions import RequestException
 from selenium.common.exceptions import WebDriverException
 
-from jobs.models import JobListing, Company, Tag
+from jobs.models import JobListing, Company, Tag, Category, JobType
 
 # Initialize a logger
 logging.basicConfig(level=logging.INFO)
@@ -50,7 +50,7 @@ class JobScraper:
     def __del__(self):
         self.driver.quit()
 
-    def load_website(self, url, load_more_selector=None, infinite_scroll=False, next_page_selector=None, website_config=None):
+    def load_website(self, url, load_more_selector=None, infinite_scroll=False, next_page_selector=None, website_config=None, job_type=None, category=None):
         max_attempts = 3
         for attempt in range(max_attempts):
             try:
@@ -69,15 +69,17 @@ class JobScraper:
                     # Loop to navigate through multiple pages
                     all_job_listings = []
                     job_id = 0
+
                     while True:
                         html = self.driver.page_source
                         # create soup object only once per page
                         soup = BeautifulSoup(self.driver.page_source, 'html.parser')
                         for job_element in soup.select(website_config['job_selector']):
                             job_id += 1
-                            all_job_listings.append(self.scrape_job(job_element, website_config, job_id))
+                            all_job_listings.append(self.scrape_job(job_element, website_config, job_id, job_type, category))
                         try:
                             # Break the loop if navigate_next_page() returns False
+
                             if not self.navigate_next_page(next_page_selector):
                                 break
                         except Exception as e:
@@ -94,7 +96,6 @@ class JobScraper:
                         job_id += 1
                         all_job_listings.append(self.scrape_job(job_element, website_config, job_id))
                     return all_job_listings
-                break
             except RequestException:
                 logger.warning(f"RequestException encountered on attempt {attempt + 1} of {max_attempts}")
                 time.sleep(2)  # Wait for 2 seconds before the next attempt
@@ -130,18 +131,12 @@ class JobScraper:
         try:     
             if next_page_selector is not None and isinstance(next_page_selector, str):
                 next_page_element = self.driver.find_elements(By.CSS_SELECTOR, next_page_selector)
-                # print(next_page_selector[-1].__getattribute__("href"))
-                print("next_page_selector", next_page_selector)
                 if next_page_element:
-                    
-                    print("im here!", next_page_selector)
                     try:
                         # Try clicking the element first
                         next_page_element[-1].click()
                         
                     except WebDriverException:
-                        # If clicking fails, try navigating using 'href' attribute
-                        print("M here also")
                         next_page_url = next_page_element[-1].get_attribute("href")
 
                         if not next_page_url:
@@ -170,9 +165,9 @@ class JobScraper:
         html = self.load_website(url, load_more_selector, infinite_scroll, next_page_selector)
         return BeautifulSoup(html, 'html.parser')
 
-    def scrape_jobs(self, website_config):
+    def scrape_jobs(self, website_config, job_categories, job_types):
         JobListing.objects.update(to_be_deleted=True)
-        url = website_config['url']
+        
         load_more_selector = website_config.get('load_more_selector', None)
         infinite_scroll = website_config.get('infinite_scroll', False)
         next_page_selector = website_config.get('next_page_selector', None)
@@ -197,18 +192,55 @@ class JobScraper:
             company.job_base_url = compnany_job_base_url
             company.save()
 
-        all_job_listings = self.load_website(url, load_more_selector, infinite_scroll, next_page_selector, website_config)
-        JobListing.objects.filter(to_be_deleted=True, company=company).delete()
+        all_job_listings = []
+        for job in website_config['job_urls']:
+            try:
+                category_id = job.get('category_id')
+                type_id = job.get('type_id')
+
+                category_name = job_categories.get(category_id, None)
+                type_name = job_types.get(type_id, None)
+                
+                if category_name:
+                    category, _ = Category.objects.get_or_create(name=category_name)
+                else:
+                    print(f"Category name for id {category_id} is not found. Skipping this job.")
+                    continue
+
+                if type_name:
+                    job_type, _ = JobType.objects.get_or_create(name=type_name)
+                else:
+                    print(f"Job type name for id {type_id} is not found. Skipping this job.")
+                    continue    
+
+                JobListing.objects.filter(company=company, job_type=job_type, category=category).update(to_be_deleted=True)
+
+                for url in job.get('url', []):
+                    job_listings = self.load_website(url, load_more_selector, infinite_scroll, next_page_selector, website_config, job_type, category)
+                    all_job_listings.extend(job_listings)
+                
+                JobListing.objects.filter(to_be_deleted=True, company=company, category=category, job_type=job_type).delete()
+            except Exception as e:
+                JobListing.objects.filter(company=company, category=category, job_type=job_type).update(to_be_deleted=False)
+                print(f"An error occurred: {e}")
+
         return all_job_listings
 
     @staticmethod
-    def scrape_job(job_element, website_config, job_id):
-        def get_text(element, selector):
+    def scrape_job(job_element, website_config, job_id, job_type, category):
+        def get_text(element, selector, next_sibling=False):
             if selector is None:
                 logger.warning(f"Selector for element '{element}' is missing in the website configuration.")
                 return None
             selected_element = element.select_one(selector)
-            return selected_element.get_text(strip=True) if selected_element else None
+            if selected_element:
+                if next_sibling:
+                    next_element = selected_element.nextSibling
+                    return next_element.strip() if next_element else None
+                else:
+                    return selected_element.get_text(strip=True)
+
+            return None
 
         def get_link(element, selector, link_in_job_selector):
             if link_in_job_selector:  # If the job link is in the job_selector
@@ -225,20 +257,20 @@ class JobScraper:
         company = Company.objects.get(name=company_name)
 
         title = get_text(job_element, website_config.get('title_selector', None))
-        location = get_text(job_element, website_config.get('location_selector', None))
+        
+        location = get_text(job_element, website_config.get('location_selector', None), website_config.get('next_sibling', None))
+        print("LO", location)
         if location is None or location.strip() == "":
             location = "United States"
         date_posted_str = get_text(job_element, website_config.get('date_selector', None))
         
         # Updated date_posted conversion
         date_posted = None
-        print("date1", date_posted_str)
         if date_posted_str is not None:
             try:
                 date_posted = convert_date_format(date_posted_str)
             except ValueError as ve:
                 logger.warning(f"Failed to convert '{date_posted_str}' to a date. Error: {ve}")
-        print("date2", date_posted)
 
         link = get_link(job_element, website_config.get('link_selector', None), website_config.get('link_in_job_selector', False))     
 
@@ -261,6 +293,8 @@ class JobScraper:
                 'date_posted': date_posted,
                 'link': link,
                 'to_be_deleted': False,  # Newly scraped jobs are not marked as "to be deleted"
+                'job_type': job_type,
+                'category': category
             }
         )
 
