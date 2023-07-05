@@ -38,7 +38,8 @@ class Command(BaseCommand):
                     count +=1
                 except (IndexError, KeyError):
                     self.stdout.write(self.style.ERROR(f'State name extraction failed for job id: {job.id}'))
-        print(f"All the location's States are Added", count)
+        self.stdout.write(self.style.SUCCESS(f"All the location's States are Added: {count}"))
+
             
         
 

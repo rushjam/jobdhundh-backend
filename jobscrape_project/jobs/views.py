@@ -93,7 +93,7 @@ class JobViewSet(viewsets.ModelViewSet):
             queryset = queryset.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.01).order_by('-rank')
 
         if location is not None:
-            queryset = queryset.filter(location__icontains=location)
+            queryset = queryset.filter(state_location__iexact=location)
 
 
         if category is not None:
@@ -102,7 +102,7 @@ class JobViewSet(viewsets.ModelViewSet):
         job_types = self.request.query_params.getlist('job_type', None)
         if job_types:
             queryset = queryset.filter(job_type__name__in=job_types)
-            
+
         return queryset
 
 
