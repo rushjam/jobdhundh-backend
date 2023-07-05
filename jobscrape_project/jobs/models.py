@@ -44,6 +44,7 @@ class JobListing(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     location = models.CharField(max_length=200, null=True)
+    state_location = models.CharField(max_length=200, null=True, blank=True)
     date_posted = models.DateTimeField(blank=True, null=True)
     link = models.URLField(max_length=500, null=True)
     hash = models.CharField(max_length=32, unique=True, null=True)  # MD5 hash length is 32
