@@ -60,7 +60,7 @@ class JobViewSet(viewsets.ModelViewSet):
         search = self.request.query_params.get('search', None)
         location = self.request.query_params.get('location', None)
         category = self.request.query_params.get('category', None)
-
+        job_types = self.request.query_params.getlist('job_type', None)
 
         # Apply the filtering if 'days' is not None
         if days is not None:
@@ -99,7 +99,6 @@ class JobViewSet(viewsets.ModelViewSet):
         if category is not None:
             queryset = queryset.filter(category__name__iexact=category)
 
-        job_types = self.request.query_params.getlist('job_type', None)
         if job_types:
             queryset = queryset.filter(job_type__name__in=job_types)
 
@@ -123,9 +122,14 @@ class CompanyViewSet(viewsets.ModelViewSet):
     
     @action(detail=True)
     def jobs(self, request, pk=None):
-        jobs = JobListing.objects.filter(company_id=pk)
+        jobs = JobListing.objects.filter(company_id=pk).order_by('title')
 
         days = self.request.query_params.get('days', None)
+        search = self.request.query_params.get('search', None)
+        location = self.request.query_params.get('location', None)
+        category = self.request.query_params.get('category', None)
+        job_types = self.request.query_params.getlist('job_type', None)
+
         if days is not None:
             cutoff_date = timezone.now() - timedelta(days=int(days))
             jobs = jobs.filter(
@@ -143,6 +147,25 @@ class CompanyViewSet(viewsets.ModelViewSet):
                     output_field=IntegerField()
                 )
             ).order_by('priority', '-ordering_date')
+        
+        if search is not None and search != '':
+            vector = SearchVector('title')
+            # Look up any synonyms for the search term
+            synonyms = SYNONYMS.get(search.lower(), [])
+            # Create a SearchQuery for the search term and any synonyms
+            query = SearchQuery(search, search_type='plain')
+            for synonym in synonyms:
+                query |= SearchQuery(synonym, search_type='plain')
+            jobs = jobs.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.01).order_by('-rank')
+        
+        if location is not None:
+            jobs = jobs.filter(state_location__iexact=location)
+        
+        if category is not None:
+            jobs = jobs.filter(category__name__iexact=category)
+        
+        if job_types:
+            jobs = jobs.filter(job_type__name__in=job_types)
 
         page = self.paginate_queryset(jobs)
         if page is not None:
