@@ -225,6 +225,13 @@
           ],
           "category_id": "10",
           "type_id": "3"
+        },
+        {
+          "url": [
+            "https://jobs.apple.com/en-us/search?location=united-states-USA&team=apps-and-frameworks-SFTWR-AF+cloud-and-infrastructure-SFTWR-CLD+core-operating-systems-SFTWR-COS+devops-and-site-reliability-SFTWR-DSR+engineering-project-management-SFTWR-EPM+information-systems-and-technology-SFTWR-ISTECH+machine-learning-and-ai-SFTWR-MCHLN+security-and-privacy-SFTWR-SEC+software-quality-automation-and-tools-SFTWR-SQAT+wireless-software-SFTWR-WSFT+machine-learning-infrastructure-MLAI-MLI+deep-learning-and-reinforcement-learning-MLAI-DLRL+natural-language-processing-and-speech-technologies-MLAI-NLP+computer-vision-MLAI-CV+applied-research-MLAI-AR"
+          ],
+          "category_id": "1",
+          "type_id": "1"
         }
       ],
       "dynamic": true,
@@ -294,6 +301,90 @@
       "load_more_selector": "div.uwa-capture div.css-bzyevI div.css-PKJb:nth-child(2) div.css-ofGld:nth-child(2) div.container-inner.css-fVLpfI div.css-fyomcu div.css-bnia-Dv:nth-child(5) > button.css-kTiVgx",
       "infinite_scroll": null,
       "next_page_selector": null
+    },
+    {
+      "company_name": "Cognizant",
+      "company_logo": "https://res.cloudinary.com/duccafxjv/image/upload/v1687636952/cognizant_wew7gx.jpg",
+      "company_desc": "Cognizant is an American multinational information technology services and consulting company. It is headquartered in Teaneck, New Jersey, U.S. Cognizant is part of the NASDAQ-100 and trades under CTSH.",
+      "company_tags": ["Tech", "Software"],
+      "company_career_url": "https://careers.cognizant.com/",
+      "compnany_job_base_url": null,
+      "job_urls": [
+        {
+          "url": [
+            "https://careers.cognizant.com/professionals/us/en/c/technology-engineering-jobs"
+          ],
+          "category_id": "1",
+          "type_id": "1"
+        }
+      ],
+      "dynamic": true,
+      "job_selector": "[data-ph-at-id='jobs-list-item']",
+      "title_selector": "div.information span:nth-child(2) a.au-target div.job-title > span:nth-child(1)",
+      "location_selector": "div.information p.job-info:nth-child(3) span.au-target:nth-child(2) > span.job-location",
+      "location_sibling": true,
+      "date_selector": null,
+      "link_in_job_selector": false,
+      "link_selector": "div.information span:nth-child(2) a.au-target",
+      "load_more_selector": "[au-target-id='562']",
+      "infinite_scroll": null,
+      "next_page_selector": "[aria-label='View next page']"
+    },
+    {
+      "company_name": "Infosys",
+      "company_logo": "https://res.cloudinary.com/duccafxjv/image/upload/v1687636837/infosys_q3gvpq.png",
+      "company_desc": "Infosys Limited is an Indian multinational information technology company that provides business consulting, information technology and outsourcing services. The company was founded in Pune and is headquartered in Bangalore.",
+      "company_tags": ["Tech", "Software"],
+      "company_career_url": "https://www.infosys.com/careers/usa/",
+      "compnany_job_base_url": null,
+      "job_urls": [
+        {
+          "url": [
+            "https://digitalcareers.infosys.com/infosys/global-careers?location=USA&per_page=100&page=1&skillset=+GCP+Data+Engineer+-+Beginner%2C+Technology%7C+SQL+Developer+-+Proficient%2C+Technology%7C.NET+application+Support%7C.NET+application+development%2C+Support%7C.NET+application+development%2C+Support%2C+Technology%7C.NET%2C+Technology%7C.Net+Application+Development%7CAI+Apps+for+Manufacturing%7CAPI+%2F+Microservices+Architecture%7CAPI+%2F+Microservices+Architecture%2C+Technology%7CASP.NET+MVC%2C+Technology%7CASP.Net%7CASP.Net+Web+API%7CAWS%7CAWS+-+Data+Security%7CAWS+-+GRC%7CAWS+AI%2FML%2C+Technology%7CAWS+App+Development%7CAWS+App+Development%2C+Technology%7CAWS+Data+Analytics%2C+Technology%7CAWS+Database%7CAWS+IOT%7CAWS+Networking+Services%7CAWS%2C+Technology%7CAmazon+API%2FTools%7CAmazon+Webservices+DevOps%7CAmazon+Webservices%28AWS%29%7CAndroid%7CAngular+JS%2FAngular+1.x%7CApache%2C+Technology%7CArtificial+Intelligence%7CApplication+Mgmt+Services-Android+Development%2C+Technology%7CArtificial+Intelligence+-+ALL%7CAutomated+Testing%7CAutomation+Anywhere%7CAutomation+testing%7CAzure+API+Gateway%7CAzure+Core+services%7CAzure+Core+services%2C+Technology%7CAzure+Data+Factory+%28ADF%29%7CAzure+Data+Factory+%28ADF%29%2C+Technology%7CAzure+Development+%26+Solution+Architecting%7CAzure+Devops%7CBig+Data%7CBig+Data+-+Data+Processing%7CBig+Data+-+Hadoop%7CBig+Data+Analytics+Process%7CBig+Data+Testing%7CC+and+C%2B%2B%7CC%23+%28C+Sharp%29%7CCloud+Integration%7CCloud+Integration+and+API+Management%7CCloud+Platform%7CCloud+Platform+-+ALL%2C+Technology%7CCloud+Security%7CCloud+Testing%7CCloud+Testing+-+ALL%2C+Technology%7CContinuous+delivery+-+Continuous+deployment+and+release%2C+Technology%7CContinuous+delivery+-+Environment+management+and+provisioning%2C+Technology%7CContinuous+integration+-+.NET%2C+Technology%7CContinuous+integration+-+Java%7CContinuous+integration+-+Java%2C+Technology%7CCore+Java%7CCore+Java%2C+Technology%7CCyber+Competency+Strategy+Planning%7CCybersecurity++Competency+Management%7CDB2%2C+Technology%7CData+Management+-+DB%7CData+Migration%7CData+On+Cloud+-+Platform%7CData+Services+Testing%7CData+Warehousing+Development+process%7CData+Warehousing+Development+process%2C+Technology%7CData+networking+Access+technologies%7CData+networking+WLAN+Protocols+%26+Standards%2C+Technology%7CDataStage%7CData+networking+network+management%7CData+on+Cloud-DataStore%7CDatabase%7CDatabase+Administration%7CDatabase-+ALL%7CDesign%2F+Modelling%7CDevOps%7CEnterprise+Security+J2EE+APIs%7CGCP+-+GRC%7CGCP+App+Development%2C+Technology%7CGoogle+Cloud+-+Architecture%7CGoogle+Cloud+-+Compute%2C+Networking%2C+Storage+%26+Databases%7CGoogle+app+engine+APIs%2FTools%7CHTML%2CCSS%2CJavascript%2CJquery%7CHTML%2CCSS%2CJavascript%2CJquery%2CPHP%2CDrupal%7CHTML5%2C+Technology%7CHTML5%2CCSS3%2CAngularJS%2C+Technology%7CHadoop%7CJ2EE%7CJ2EE%2C+Technology%7CJAAS%2C+Technology%7CJava%7CJava+Application+Server%7CJava+Card+Programming%7CJava+EE+Security+Standards%3A+JCA%2C+JCE%2C+JAAS%2C+JSSE%2C+JGSS%7CJava+Web+Server%7CJava+web+services%7CJava+web+services%2C+Technology%7CJavascript%7CKubernetes%7CKotlin%2C+Technology%7CLinux%7CLinux+Admin%7CLinux%2C+Technology%7CMS+Azure+AD%2C+MS+Azure+RMS%2C+MS+Intune%2C+Technology%7CMS+SQL+Server%7CMS+SQL+Server%2C+Technology%7CMS-Windows%2C+Technology%7CMSBI+%28Power+BI%29%2C+Technology%7CMachine+Learning%7CMicrosoft+Azure+-+Identity+Management%7CMicrosoft+Azure+-+Security+Monitoring%7CMicrosoft+Hyper-V+RDVH%2C+Technology%7CMicrosoft+SQL+Server%7CMicrosoft+SQL+Server%2C+Technology%7CMiddleware+Administration%7CMobile+Automation+Testing%7CMobile+Development+Platform%7CMobile+Functional+Test+Automation+%28iOS%2C+Android%29%7CMobile+Functional+Test+Automation+%28iOS%2C+Android%29%2C+Technology%7CMobile+Performance+Testing+process%7CMobile+Test+Automation+process%7CMobile+Testing%7CMobile+Testing+-+ALL%7CMobile+development+platform%7CMySQL%2C+Technology%7CNoSQL+Databases+-+Others%2C+Technology%7CNodeJS%7COpen+System%7COracle+Application+Development%7COracle+Apps+PL%2FSQL%2C+Technology%7COracle+Apps+Technical%7COracle+BigData+Appliance%7COracle+Cloud%7COracle+Database%7COracle+Database%2C+Technology%7COracle+Edge+Applications%7CPL%2FSQL%7CPERL%2C+Technology%7CPLM+Application+Maintenance+and+Development+process%2C+Technology%28IBPO%29%7CPLM+Product+Platform+Management+process%2C+Process%7CPLM+Product+Platform+Management+process%2C+Technology%7CPackage%7CPackage+Testing%7CPanel+Data+Analysis%7CPerformance+Testing+process%7CPython%7CPurchasing+Cloud%2C+Technology%7CPython+-+Big+Data%7CPython+-+OpenSystem%7CPython+-+OpenSystem%2C+Technology%7CPython%2C+Technology%7CRestful+web+services%7CRedux.js%2C+Technology%7CRxJava%2C+Technology%7CSAP+BI%7CSQL+SSIS%7CSQL+Server%7CSQL+Server+%28T-SQL%29%2C+Technology%7CSnowflake%7CSoftware+Engineering%7CSpring%7CSpring+MVC%2C+Technology%7CSpring%2C+Technology%7CSpringboot%7CSpringboot%2C+Technology%7CSwift%7CTest+Automation+Process%7CTest+Automation+Process%2C+Technology%7CTest+Data+Management%7CTest+Data+Mining%7CTest+automation+framework+design%7CTest+automation+framework+design%2C+Technology%7CTesting+processes%7CVue.js%7CWeb+Services-REST%2C+Technology%7Cexpress.js%2C+Technology%7CiOS%7CiOS%2C+Technology%7CmBaaS+%28Mobile+Backend-as-a-Service+%29%7Creact+JS%2C+Technology&created_at=30"
+          ],
+          "category_id": "1",
+          "type_id": "1"
+        },
+        {
+          "url": [
+            "https://digitalcareers.infosys.com/infosys/global-careers?location=USA&per_page=100&page=1&skillset=Product+Management|Product+Development|Product+Design+%26+Development|Product+Data+Management%2C+Process|Product+Bundling%2C+Quote+To+Order%2C+Business+Rule+Configuration%2C+ROI+Calculator|Product+Build+and+Configuration|Capital+Markets+-+Products|Maintenance+and+Production+Support+process|PLM+Product+Platform+Management+process%2C+Process|PLM+Product+Platform+Management+process%2C+Technology&created_at=30"
+          ],
+          "category_id": "7",
+          "type_id": "1"
+        },
+        {
+          "url": ["https://digitalcareers.infosys.com/infosys/global-careers?location=USA&per_page=100&page=1&skillset=Sales+and+Marketing|Pre-Sales|Sales|Sales+Execution%2C+Process|Sales+Execution&created_at=30"],
+          "category_id": "2",
+          "type_id": "1"
+        },
+        {
+          "url": ["https://digitalcareers.infosys.com/infosys/global-careers?location=USA&per_page=100&page=1&skillset=Finance|Accounting+%26+Reporting%2C+Domain|Account+Management|Infosys+Account+Management+processes+and+systems&created_at=30"],
+          "category_id": "3",
+          "type_id": "1"
+        },
+        {
+          "url": ["https://digitalcareers.infosys.com/infosys/global-careers?location=USA&per_page=100&page=1&skillset=Human+Resource+Management%7CHuman+Resources&created_at=30"],
+          "category_id": "4",
+          "type_id": "1"
+        },
+        {
+          "url": ["https://digitalcareers.infosys.com/infosys/global-careers?location=USA&per_page=100&page=1&skillset=Project+Management|Certified+Project+Management+Professional|Certified+Project+Management+Professional%2C+Process&created_at=30"],
+          "category_id": "8",
+          "type_id": "1"
+        }
+      ],
+      "dynamic": true,
+      "job_selector": "body.whiteBody.infosys-page:nth-child(2) div.template-content.rendered.non-editable.js-page-custom-css-section:nth-child(2) div.editable-sections:nth-child(2) div.editable-sections.view-mode.page-body:nth-child(6) div.user-sortable div.sortable-section.js-section-container.js-text-listing-section.custom_text_listing_3 div.section-content div.text-listing-section.type-section.js-section.js-headline-listing-section div.text-listing-container.editable div.job-listing div.listing-container.subsection div.text-section.jobs-text-section div.editable-container div.listing.js-save-content.actionable  a",
+      "title_selector": ".job-title",
+      "location_selector": "div.job-location.js-job-city:nth-child(2) > div.location-inline:nth-child(1)",
+      "date_selector": null,
+      "link_in_job_selector": true,
+      "link_selector": null,
+      "load_more_selector": null,
+      "infinite_scroll": null,
+      "next_page_selector": "div.job-listing div#jobs_text_section div.editable-container .listing div.classic-custom-pagination nav .text-left .navigation-container .pagination-button.right "
     }
   ]
 }
+
+

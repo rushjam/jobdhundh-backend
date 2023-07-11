@@ -1,8 +1,8 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 from django.db.models import Q
 from datetime import datetime, timedelta
-
 
 class JobType(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -67,3 +67,19 @@ class JobListing(models.Model):
 
     def __str__(self):
         return self.title
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    auth0_user_id = models.CharField(max_length=255, unique=True, null=True)
+    full_name = models.CharField(max_length=100, null=False)
+    is_authorized = models.BooleanField(default=False)
+    saved_jobs = models.ManyToManyField(JobListing, blank=True)
+    saved_companies = models.ManyToManyField(Company, blank=True)  # Companies that user saved
+
+
+    def __str__(self):
+        return self.user.username
+
+
+    # any additional fields go here
+    # e.g., profile_pic = models.ImageField(upload_to='profile_pics', blank=True)

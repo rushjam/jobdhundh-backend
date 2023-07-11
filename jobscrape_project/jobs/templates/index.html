@@ -1,0 +1,82 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Auth0 Example</title>
+    <script>
+
+      window.onload = function() {
+        // Handle the callback from the login endpoint
+      fetch('/callback', /* your fetch options */)
+        .then(response => response.json())
+        .then(data => {
+            localStorage.setItem('jwt_token', data.jwt_token);
+            // update the UI as per the logged in user
+            // ...
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+        
+        var btn = document.getElementById('get-user-profile');
+        var saveJobBtn = document.getElementById('save-job');
+
+        btn.addEventListener('click', function() {
+          var token = localStorage.getItem('jwt_token');
+          fetch('/userprofiles/me/', {
+            method: 'GET',
+            headers: {
+              'Authorization': 'Bearer ' + token
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log("zzz",data);
+            document.getElementById('user-profile-result').textContent = JSON.stringify(data, null, 2);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+        });
+
+        saveJobBtn.addEventListener('click', function() {
+          var token = localStorage.getItem('jwt_token');
+          var jobId = prompt("Enter the ID of the job you want to save:");
+          if (jobId !== null) {
+            fetch(`/userprofiles/save_company`, {
+              method: 'POST',
+              headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                id: jobId
+              })
+            })
+            .then(response => response.json())
+            .then(data => {
+              console.log("zzz",data);
+              document.getElementById('save-job-result').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+          }
+        });
+      };
+    </script>
+  </head>
+  <body>
+    {% if session %}
+    <h1>Welcome {{session.name}}!</h1>
+    <p><a href="{% url 'logout_view' %}" id="qsLogoutBtn">Logout</a></p>
+    <button id="get-user-profile">Get User Profileee</button>
+    <pre id="user-profile-result"></pre>
+    <button id="save-job">Save Job</button>
+    <pre id="save-job-result"></pre>
+    <div><pre>{{pretty}}</pre></div>
+    {% else %}
+    <h1 id="profileDropDown">Welcome Guest</h1>
+    <p><a href="{% url 'login_view' %}" id="qsLoginBtn">Login</a></p>
+    {% endif %}
+  </body>
+</html>

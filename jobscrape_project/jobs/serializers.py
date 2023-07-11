@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from urllib.parse import urljoin
 from django.utils.timezone import localtime
-from .models import JobListing, Company, Tag
+from django.contrib.auth.models import User
+
+from .models import JobListing, Company, Tag, UserProfile
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -81,4 +83,34 @@ class CompnayAllJobSerializer(serializers.ModelSerializer):
         model = JobListing
         fields = ['id','job_type', 'category', 'title', 'location', 'date_posted', 'link', 'discovered_at']
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            validated_data['username'], 
+            validated_data['email'], 
+            validated_data['password']
+        )
+        return user
     
+class UserProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    saved_jobs = JobSerializer(read_only=True, many=True) 
+
+    class Meta:
+        model = UserProfile
+        fields = ['user', 'full_name', 'is_authorized', 'saved_jobs', 'saved_companies']
+        read_only_fields = ('user',)  # User cannot be changed or set in the UserProfile API
+    
+    def create(self, validated_data):
+        # Create User instance
+        user_data = validated_data.pop('user')
+        user = UserSerializer.create(UserSerializer(), validated_data=user_data)
+
+        # Create UserProfile instance
+        user_profile = UserProfile.objects.create(user=user, **validated_data)
+        return user_profile
